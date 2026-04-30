@@ -1,3 +1,14 @@
 <Solution>
-  <Project Path="SS-AuthService.API/SS-AuthService.API.csproj" />
+  <Folder Name="/src/">
+    <Project Path="src/SS.AuthService.API/SS.AuthService.API.csproj" />
+    <Project Path="src/SS.AuthService.Application/SS.AuthService.Application.csproj" />
+    <Project Path="src/SS.AuthService.Domain/SS.AuthService.Domain.csproj" />
+    <Project Path="src/SS.AuthService.Infrastructure/SS.AuthService.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SS.AuthService.API.Tests/SS.AuthService.API.Tests.csproj" />
+    <Project Path="tests/SS.AuthService.Application.Tests/SS.AuthService.Application.Tests.csproj" />
+    <Project Path="tests/SS.AuthService.Domain.Tests/SS.AuthService.Domain.Tests.csproj" />
+    <Project Path="tests/SS.AuthService.Infrastructure.Tests/SS.AuthService.Infrastructure.Tests.csproj" />
+  </Folder>
 </Solution>

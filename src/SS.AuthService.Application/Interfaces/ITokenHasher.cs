@@ -2,7 +2,7 @@ namespace SS.AuthService.Application.Interfaces;
 
 /// <summary>
 /// Abstraksi untuk hashing token yang bersifat deterministik (SHA-256).
-/// BERBEDA dari IPasswordHasher (BCrypt) yang menggunakan salt acak.
+/// BERBEDA dari IPasswordHasher (Argon2id) yang menggunakan salt acak.
 /// SHA-256 dibutuhkan agar token bisa di-lookup langsung dari database.
 /// </summary>
 public interface ITokenHasher

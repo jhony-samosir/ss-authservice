@@ -44,7 +44,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
         if (emailExists)
             return new RegisterResult(true, EnumerationSafeMessage);
 
-        // 3. Hash password menggunakan BCrypt (work factor 12)
+        // 3. Hash password menggunakan Argon2id (Enterprise Best Practice)
         var passwordHash = _passwordHasher.HashPassword(request.Password);
 
         // 4. Ambil default role dari DB (bukan magic number)
@@ -70,7 +70,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             // 6. Generate token acak -> hash SHA-256 (deterministik, bisa di-lookup dari DB)
-            //    BUKAN BCrypt karena BCrypt menghasilkan hash berbeda setiap kali (tidak bisa di-lookup)
+            //    BUKAN Argon2id karena Argon2id menghasilkan hash berbeda setiap kali (tidak bisa di-lookup)
             var verificationToken = _tokenHasher.Generate();
             var verificationTokenHash = _tokenHasher.Hash(verificationToken);
 

@@ -1,0 +1,33 @@
+using System;
+using System.Collections.Generic;
+
+namespace SS.AuthService.Domain.Entities;
+
+public partial class RoleMenu
+{
+    public int Id { get; set; }
+
+    public int RoleId { get; set; }
+
+    public int MenuId { get; set; }
+
+    public bool CanCreate { get; set; }
+
+    public bool CanRead { get; set; }
+
+    public bool CanUpdate { get; set; }
+
+    public bool CanDelete { get; set; }
+
+    public DateTime CreatedAt { get; set; }
+
+    public int? CreatedBy { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
+
+    public int? UpdatedBy { get; set; }
+
+    public DateTime? DeletedAt { get; set; }
+
+    public int? DeletedBy { get; set; }
+}

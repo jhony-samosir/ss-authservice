@@ -20,13 +20,21 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IEmailVerificationRepository, EmailVerificationRepository>();
+        services.AddScoped<ILoginAttemptRepository, LoginAttemptRepository>();
+        services.AddScoped<IAuthSessionRepository, AuthSessionRepository>();
 
         // Authentication & Security
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
+        services.Configure<EmailOptions>(configuration.GetSection(EmailOptions.SectionName));
+
         services.AddScoped<IPasswordHasher, Argon2PasswordHasher>();
         services.AddScoped<IJwtProvider, JwtProvider>();
         services.AddScoped<ITokenHasher, TokenHasher>();
-        services.AddScoped<IEmailService, SimulatedEmailService>();
+        services.AddScoped<IEmailService, GmailEmailService>();
+
+        // Email Background Processing
+        services.AddSingleton<IEmailQueue, EmailQueue>();
+        services.AddHostedService<EmailBackgroundWorker>();
         
         return services;
     }

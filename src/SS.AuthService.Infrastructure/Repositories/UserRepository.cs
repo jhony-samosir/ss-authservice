@@ -15,18 +15,19 @@ public class UserRepository : IUserRepository
     }
 
     public async Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default)
-    {
-        // Menggunakan EF.Functions.ILike untuk case-insensitive comparison di PostgreSQL
-        return await _context.Users
-            .AsNoTracking()
-            .AnyAsync(u => u.Email == email && u.DeletedAt == null, cancellationToken);
-    }
+        => await _context.Users.AnyAsync(u => u.Email == email && u.DeletedAt == null, cancellationToken);
 
-    public Task AddAsync(User entity, CancellationToken cancellationToken = default)
-    {
-        _context.Users.Add(entity);
-        return Task.CompletedTask;
-    }
+    public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
+        => await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.DeletedAt == null, cancellationToken);
+
+    public async Task<User?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+        => await _context.Users.FirstOrDefaultAsync(u => u.Id == id && u.DeletedAt == null, cancellationToken);
+
+    public async Task AddAsync(User entity, CancellationToken cancellationToken = default)
+        => await _context.Users.AddAsync(entity, cancellationToken);
+
+    public void Update(User entity)
+        => _context.Users.Update(entity);
 
     public async Task<int> GetDefaultCustomerRoleIdAsync(CancellationToken cancellationToken = default)
     {

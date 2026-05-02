@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore.Storage;
 using SS.AuthService.Application.Interfaces;
 using SS.AuthService.Infrastructure.Persistence.Context;
+using SS.AuthService.Infrastructure.Repositories;
 
 namespace SS.AuthService.Infrastructure;
 
@@ -12,11 +13,20 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly AppDbContext _context;
     private IDbContextTransaction? _currentTransaction;
+    private IUserRepository? _users;
+    private IEmailVerificationRepository? _emailVerifications;
+    private ILoginAttemptRepository? _loginAttempts;
+    private IAuthSessionRepository? _authSessions;
 
     public UnitOfWork(AppDbContext context)
     {
         _context = context;
     }
+
+    public IUserRepository Users => _users ??= new UserRepository(_context);
+    public IEmailVerificationRepository EmailVerifications => _emailVerifications ??= new EmailVerificationRepository(_context);
+    public ILoginAttemptRepository LoginAttempts => _loginAttempts ??= new LoginAttemptRepository(_context);
+    public IAuthSessionRepository AuthSessions => _authSessions ??= new AuthSessionRepository(_context);
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         => await _context.SaveChangesAsync(cancellationToken);

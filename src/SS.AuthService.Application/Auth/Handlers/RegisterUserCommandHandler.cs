@@ -16,7 +16,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordHasher _passwordHasher;
     private readonly ITokenHasher _tokenHasher;
-    private readonly IEmailService _emailService;
+    private readonly IEmailQueue _emailQueue;
 
     public RegisterUserCommandHandler(
         IUserRepository userRepository,
@@ -24,14 +24,14 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
         IUnitOfWork unitOfWork,
         IPasswordHasher passwordHasher,
         ITokenHasher tokenHasher,
-        IEmailService emailService)
+        IEmailQueue emailQueue)
     {
         _userRepository = userRepository;
         _emailVerificationRepository = emailVerificationRepository;
         _unitOfWork = unitOfWork;
         _passwordHasher = passwordHasher;
         _tokenHasher = tokenHasher;
-        _emailService = emailService;
+        _emailQueue = emailQueue;
     }
 
     public async Task<RegisterResult> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
@@ -87,8 +87,8 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
 
             await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
-            // 7. Kirim email di luar transaksi (email adalah operasi non-transaksional)
-            await _emailService.SendVerificationEmailAsync(normalizedEmail, verificationToken);
+            // 7. Masukkan email ke antrean background (UX Best Practice)
+            await _emailQueue.QueueEmailAsync(new EmailTask(normalizedEmail, verificationToken));
 
             return new RegisterResult(true, EnumerationSafeMessage);
         }

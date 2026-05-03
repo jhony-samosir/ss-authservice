@@ -4,7 +4,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using SS.AuthService.API.DTOs;
 using SS.AuthService.Application.Auth.Commands;
 using SS.AuthService.Application.Auth.DTOs;
 using SS.AuthService.Application.Users.Queries;
@@ -41,9 +40,8 @@ public class AuthController : ControllerBase
 
     [HttpPost("login")]
     [EnableRateLimiting("AuthLimiter")]
-    public async Task<IActionResult> Login([FromBody] LoginRequest request)
+    public async Task<IActionResult> Login([FromBody] LoginUserCommand command)
     {
-        var command = new LoginUserCommand(request.Email, request.Password, request.DeviceInfo);
         var result = await _mediator.Send(command);
 
         if (!result.Success)
@@ -92,9 +90,8 @@ public class AuthController : ControllerBase
 
     [HttpPost("forgot-password")]
     [EnableRateLimiting("AuthLimiter")]
-    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordCommand command)
     {
-        var command = new ForgotPasswordCommand(request.Email);
         await _mediator.Send(command);
 
         // Selalu return sukses untuk mencegah Account Enumeration
@@ -103,9 +100,8 @@ public class AuthController : ControllerBase
 
     [HttpPost("reset-password")]
     [EnableRateLimiting("AuthLimiter")]
-    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordCommand command)
     {
-        var command = new ResetPasswordCommand(request.Token, request.NewPassword);
         var result = await _mediator.Send(command);
 
         if (result.IsSuccess)

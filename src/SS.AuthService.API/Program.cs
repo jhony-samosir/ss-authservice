@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.IdentityModel.Tokens;
 using SS.AuthService.API.Middlewares;
 using SS.AuthService.Application;
 using SS.AuthService.Infrastructure;
@@ -10,7 +9,6 @@ using SS.AuthService.Infrastructure.Authentication;
 using SS.AuthService.API.Configurations.Json;
 using SS.AuthService.API.Filters;
 using System.IdentityModel.Tokens.Jwt;
-using System.Text;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.DataProtection;
 using SS.AuthService.Infrastructure.Diagnostics;

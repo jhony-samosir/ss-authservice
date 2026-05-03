@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using SS.AuthService.Domain.Common;
 
 namespace SS.AuthService.Domain.Entities;
 
-public partial class RoleMenu
+public partial class RoleMenu : IAuditableEntity, ISoftDelete
 {
     public int Id { get; set; }
 

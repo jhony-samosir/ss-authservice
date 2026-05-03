@@ -1,10 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.Net;
+using SS.AuthService.Domain.Common;
 
 namespace SS.AuthService.Domain.Entities;
 
-public partial class AuthSession
+public partial class AuthSession : IAuditableEntity
 {
     public long Id { get; set; }
 

@@ -1,9 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SS.AuthService.Application.Common.Interfaces;
 using SS.AuthService.Application.Interfaces;
 using SS.AuthService.Infrastructure.Authentication;
 using SS.AuthService.Infrastructure.Persistence.Context;
+using SS.AuthService.Infrastructure.Persistence.Interceptors;
 using SS.AuthService.Infrastructure.Repositories;
 using SS.AuthService.Infrastructure.Services;
 
@@ -13,9 +15,21 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        // Current User Service
+        services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+        // Interceptors
+        services.AddScoped<AuditInterceptor>();
+
         // Persistence
-        services.AddDbContext<AppDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("SSAuthDB")));
+        services.AddDbContext<AppDbContext>((sp, options) =>
+        {
+            var auditInterceptor = sp.GetRequiredService<AuditInterceptor>();
+            
+            options.UseNpgsql(configuration.GetConnectionString("SSAuthDB"))
+                   .AddInterceptors(auditInterceptor);
+        });
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IUserRepository, UserRepository>();

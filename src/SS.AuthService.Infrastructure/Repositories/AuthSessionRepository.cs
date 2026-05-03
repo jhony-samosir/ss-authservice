@@ -22,7 +22,7 @@ public class AuthSessionRepository : IAuthSessionRepository
     public async Task<AuthSession?> GetByRefreshTokenHashAsync(string hash, CancellationToken cancellationToken = default)
     {
         return await _context.AuthSessions
-            .FirstOrDefaultAsync(x => x.RefreshTokenHash == hash && !x.IsRevoked, cancellationToken);
+            .FirstOrDefaultAsync(x => x.RefreshTokenHash == hash, cancellationToken);
     }
 
     public void Revoke(AuthSession session)

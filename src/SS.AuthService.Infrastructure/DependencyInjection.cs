@@ -38,6 +38,11 @@ public static class DependencyInjection
         // Email Background Processing
         services.AddSingleton<IEmailQueue, EmailQueue>();
         services.AddHostedService<EmailBackgroundWorker>();
+
+        // Caching & MFA
+        services.AddDistributedMemoryCache();
+        services.AddScoped<ICacheService, CacheService>();
+        services.AddScoped<IMfaService, MfaService>();
         
         return services;
     }

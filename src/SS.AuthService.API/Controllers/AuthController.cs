@@ -51,6 +51,11 @@ public class AuthController : ControllerBase
             return Unauthorized(new { message = result.Message });
         }
 
+        if (result.StatusCode == 202)
+        {
+            return Accepted(new { message = result.Message, mfaToken = result.AccessToken });
+        }
+
         // Set Refresh Token in HttpOnly Cookie for security
         var cookieOptions = new CookieOptions
         {

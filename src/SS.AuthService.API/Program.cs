@@ -6,10 +6,14 @@ using SS.AuthService.API.Middlewares;
 using SS.AuthService.Application;
 using SS.AuthService.Infrastructure;
 using SS.AuthService.Infrastructure.Authentication;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Clear default claim mapping to ensure 'sub' is used as-is
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 // 1. Configure CORS
 builder.Services.AddCors(options =>

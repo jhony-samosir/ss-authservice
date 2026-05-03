@@ -107,6 +107,14 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, LoginRe
             }
 
             // 6. Session Management
+            if (user.MfaEnabled)
+            {
+                var mfaToken = _jwtProvider.GenerateMfaChallengeToken(user);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+                await _unitOfWork.CommitTransactionAsync(cancellationToken);
+                return new LoginResult(true, "MFA required.", AccessToken: mfaToken, StatusCode: 202);
+            }
+
             var accessToken = _jwtProvider.GenerateAccessToken(user);
             var refreshToken = _jwtProvider.GenerateRefreshToken();
 

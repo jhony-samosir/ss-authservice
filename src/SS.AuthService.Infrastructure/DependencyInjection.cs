@@ -48,6 +48,7 @@ public static class DependencyInjection
         services.AddScoped<IJwtProvider, JwtProvider>();
         services.AddScoped<ITokenHasher, TokenHasher>();
         services.AddScoped<IEmailService, GmailEmailService>();
+        services.AddScoped<IDataEncryptionService, DataEncryptionService>();
 
         // Email Background Processing
         services.AddSingleton<IEmailQueue, EmailQueue>();

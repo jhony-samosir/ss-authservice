@@ -5,12 +5,14 @@ using Microsoft.IdentityModel.Tokens;
 using SS.AuthService.API.Middlewares;
 using SS.AuthService.Application;
 using SS.AuthService.Infrastructure;
+using SS.AuthService.Infrastructure.Persistence.Context;
 using SS.AuthService.Infrastructure.Authentication;
 using SS.AuthService.API.Configurations.Json;
 using SS.AuthService.API.Filters;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,24 +81,27 @@ builder.Services.Configure<SS.AuthService.Application.Common.Settings.SecuritySe
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 
+// 1. Data Protection Hardening (Enterprise Ready)
+builder.Services.AddDataProtection()
+    .SetApplicationName("SS.AuthService")
+    .PersistKeysToDbContext<AppDbContext>();
+
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
+// 2. Configure Options with Validation
+builder.Services.AddOptions<JwtOptions>()
+    .BindConfiguration(JwtOptions.SectionName)
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
+builder.Services.ConfigureOptions<ConfigureJwtBearerOptions>();
+
 // 3. Configure Authentication
-var jwtOptions = builder.Configuration.GetSection("Jwt");
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtOptions["Issuer"],
-            ValidAudience = jwtOptions["Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions["Secret"]!))
-        };
+        options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
     });
 
 // 4. Configure Authorization (RBAC)

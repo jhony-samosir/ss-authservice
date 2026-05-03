@@ -5,9 +5,11 @@ using SS.AuthService.Application.Common.Interfaces;
 using SS.AuthService.Application.Interfaces;
 using SS.AuthService.Infrastructure.Authentication;
 using SS.AuthService.Infrastructure.BackgroundServices;
+using SS.AuthService.Infrastructure.Diagnostics;
 using SS.AuthService.Infrastructure.Persistence.Context;
 using SS.AuthService.Infrastructure.Persistence.Interceptors;
 using SS.AuthService.Infrastructure.Repositories;
+using SS.AuthService.Infrastructure.Security;
 using SS.AuthService.Infrastructure.Services;
 
 namespace SS.AuthService.Infrastructure;
@@ -60,6 +62,10 @@ public static class DependencyInjection
         services.AddDistributedMemoryCache();
         services.AddScoped<ICacheService, CacheService>();
         services.AddScoped<IMfaService, MfaService>();
+
+        // 🛡️ Security: Rate Limiting & Health Checks
+        services.AddSecurityRateLimiting();
+        services.AddSecurityHealthChecks(configuration);
         
         return services;
     }

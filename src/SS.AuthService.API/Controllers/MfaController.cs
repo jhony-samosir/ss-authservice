@@ -61,7 +61,7 @@ public class MfaController : ControllerBase
     }
 
     [HttpPost("verify")]
-    [EnableRateLimiting("StrictPolicy")]
+    [EnableRateLimiting("AuthLimiter")]
     [AllowAnonymous]
     public async Task<IActionResult> Verify([FromBody] MfaVerifyRequest request)
     {

@@ -27,7 +27,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    [EnableRateLimiting("StrictPolicy")]
+    [EnableRateLimiting("AuthLimiter")]
     public async Task<IActionResult> Register([FromBody] RegisterUserCommand command)
     {
         var result = await _mediator.Send(command);
@@ -40,7 +40,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    [EnableRateLimiting("StrictPolicy")]
+    [EnableRateLimiting("AuthLimiter")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
         var command = new LoginUserCommand(request.Email, request.Password, request.DeviceInfo);
@@ -70,7 +70,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpGet("verify-email")]
-    [EnableRateLimiting("StrictPolicy")]
+    [EnableRateLimiting("AuthLimiter")]
     public async Task<IActionResult> VerifyEmail([FromQuery] string token)
     {
         if (string.IsNullOrEmpty(token))
@@ -91,7 +91,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("forgot-password")]
-    [EnableRateLimiting("StrictPolicy")]
+    [EnableRateLimiting("AuthLimiter")]
     public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
     {
         var command = new ForgotPasswordCommand(request.Email);
@@ -102,7 +102,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("reset-password")]
-    [EnableRateLimiting("StrictPolicy")]
+    [EnableRateLimiting("AuthLimiter")]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
     {
         var command = new ResetPasswordCommand(request.Token, request.NewPassword);
@@ -123,7 +123,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("refresh")]
-    [EnableRateLimiting("StrictPolicy")]
+    [EnableRateLimiting("AuthLimiter")]
     public async Task<IActionResult> Refresh()
     {
         if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken) || string.IsNullOrEmpty(refreshToken))

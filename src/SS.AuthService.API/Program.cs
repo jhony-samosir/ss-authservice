@@ -13,6 +13,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.DataProtection;
+using SS.AuthService.Infrastructure.Diagnostics;
+using SS.AuthService.Infrastructure.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -144,6 +146,10 @@ app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// 🏥 Health Checks & Security
+app.UseMiddleware<InternalHealthCheckMiddleware>();
+app.UseSecurityHealthChecks();
 
 app.MapControllers();
 

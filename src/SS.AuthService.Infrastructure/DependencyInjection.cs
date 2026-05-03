@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SS.AuthService.Application.Common.Interfaces;
 using SS.AuthService.Application.Interfaces;
 using SS.AuthService.Infrastructure.Authentication;
+using SS.AuthService.Infrastructure.BackgroundServices;
 using SS.AuthService.Infrastructure.Persistence.Context;
 using SS.AuthService.Infrastructure.Persistence.Interceptors;
 using SS.AuthService.Infrastructure.Repositories;
@@ -53,6 +54,7 @@ public static class DependencyInjection
         // Email Background Processing
         services.AddSingleton<IEmailQueue, EmailQueue>();
         services.AddHostedService<EmailBackgroundWorker>();
+        services.AddHostedService<SecurityDataRetentionWorker>();
 
         // Caching & MFA
         services.AddDistributedMemoryCache();

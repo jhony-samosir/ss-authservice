@@ -6,6 +6,8 @@ using SS.AuthService.API.Middlewares;
 using SS.AuthService.Application;
 using SS.AuthService.Infrastructure;
 using SS.AuthService.Infrastructure.Authentication;
+using SS.AuthService.API.Configurations.Json;
+using SS.AuthService.API.Filters;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Threading.RateLimiting;
@@ -62,7 +64,14 @@ builder.Services.AddRateLimiter(options =>
 });
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<SanitizeInputFilter>();
+})
+.AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new SanitizedStringConverter());
+});
 builder.Services.AddMemoryCache();
 builder.Services.Configure<SS.AuthService.Application.Common.Settings.SecuritySettings>(
     builder.Configuration.GetSection(SS.AuthService.Application.Common.Settings.SecuritySettings.SectionName));
